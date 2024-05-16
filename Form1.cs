@@ -14,34 +14,13 @@ public partial class Form1 : Form
 
     class Kunden
     {
-        public string Anrede
-        {
-            get; set;
-        }
-        public string Vorname
-        {
-            get; set;
-        }
-        public string Nachname
-        {
-            get; set;
-        }
-        public DateTime? Geburtsdatum
-        {
-            get; set;
-        }
-        public string Stadt
-        {
-            get; set;
-        }
-        public string EMail
-        {
-            get; set;
-        }
-        public string Newsletter
-        {
-            get; set;
-        }
+        public string Anrede {get; set;}
+        public string Vorname {get; set;}
+        public string Nachname {get; set;}
+        public DateTime? Geburtsdatum {get; set;}
+        public string Stadt {get; set;}
+        public string EMail {get; set;}
+        public string Newsletter {get; set;}
     }
 
     // Startup
@@ -117,17 +96,14 @@ public partial class Form1 : Form
     // Häufigster Email-Provider
     void DisplayMostCommonEmailProvider(List<Kunden> customers)
     {
-
         // Finde den Email Provider mit den meisten Vorkommen in der Klasse Kunden.Email
-        var mostCommonEmailProvider = customers.Where(c => !string.IsNullOrEmpty(c.EMail))
-                                                .Select(c => c.EMail.Split('@').Last())
-                                                .GroupBy(emailProvider => emailProvider)
-                                                .OrderByDescending(group => group.Count())
-                                                .First()
-                                                .Key;
-
         // Anzeige des häufigsten Email-Providers im Label
-        lblEmailProvider.Text = $"Häufigster Email-Provider: {mostCommonEmailProvider}";
+        lblEmailProvider.Text = $"Häufigster Email-Provider: {customers.Where(c => !string.IsNullOrEmpty(c.EMail))
+                                                                        .Select(c => c.EMail.Split('@').Last())
+                                                                        .GroupBy(emailProvider => emailProvider)
+                                                                        .OrderByDescending(group => group.Count())
+                                                                        .First()
+                                                                        .Key}";
     }
 
     //Kunden nach Altersgruppen anzeigen
@@ -163,7 +139,7 @@ public partial class Form1 : Form
     }
 
     // Fülle ComboBox mit Städten aus der CSV-Datei
-    private void FillComboBox(List<Kunden> customers)
+    void FillComboBox(List<Kunden> customers)
     {
         var stadt = customers.Select(c => c.Stadt).Distinct().ToList();
         cbCity.DisplayMember = "Stadt auswählen:";
@@ -173,7 +149,7 @@ public partial class Form1 : Form
     }
 
     // Suche nach Stadt und Anzeige der Kunden in DataGridView nach ändern der Stadt in ComboBox
-    private void cbCity_SelectedIndexChanged(object sender, EventArgs e)
+    void cbCity_SelectedIndexChanged(object sender, EventArgs e)
     {
         // Suche Kunden nach ausgewählter Stadt in ComboBox und Zeige 50 Kunden an bei mehr als 50 soll man blättern können
         var selectedCity = cbCity.SelectedItem.ToString();
@@ -181,14 +157,14 @@ public partial class Form1 : Form
         // Geburtsdatum in Jahre umwandeln bei keinem Geburtsdatum auf "Keine Angabe" setzen und in neuer Liste speichern
         var customersInCityWithAge = customersInCity.Select(c => new
         {
-            Anrede = c.Anrede,
-            Vorname = c.Vorname,
-            Nachname = c.Nachname,
+            c.Anrede,
+            c.Vorname,
+            c.Nachname,
             Geburtsdatum = c.Geburtsdatum.HasValue ? (c.Geburtsdatum.Value.ToShortDateString()) : "Keine Angabe",
             Alter = c.Geburtsdatum.HasValue ? (DateTime.Now.Year - c.Geburtsdatum.Value.Year).ToString() : "Keine Angabe",
-            Stadt = c.Stadt,
-            EMail = c.EMail,
-            Newsletter = c.Newsletter
+            c.Stadt,
+            c.EMail,
+            c.Newsletter
         }).ToList();
 
         // Anzeige der Kunden in DataGridView
@@ -202,14 +178,14 @@ public partial class Form1 : Form
         var customersWithAgeList = customersWithAge.Select((c, index) => new
         {
             Nummer = index + 1,
-            Anrede = c.Anrede,
-            Vorname = c.Vorname,
-            Nachname = c.Nachname,
+            c.Anrede,
+            c.Vorname,
+            c.Nachname,
             Geburtsdatum = c.Geburtsdatum.Value.ToShortDateString(),
             Alter = c.Geburtsdatum.HasValue ? (DateTime.Now.Year - c.Geburtsdatum.Value.Year).ToString() : "0",
-            Stadt = c.Stadt,
-            EMail = c.EMail,
-            Newsletter = c.Newsletter
+            c.Stadt,
+            c.EMail,
+            c.Newsletter
         }).ToList();
 
         const int pageSize = 50;
@@ -226,6 +202,7 @@ public partial class Form1 : Form
         // Initialisierung der DataGridView
         UpdateDataGridView(currentPage);
 
+        // Button zum Vorblättern und Zurückblättern hinzufügen
         if (customersWithAgeList.Count > pageSize)
         {
             // Button zum Vorblättern

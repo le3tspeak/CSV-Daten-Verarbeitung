@@ -83,21 +83,18 @@ public partial class Form1 : Form
         var maleCount = customers.Count(c => c.Anrede.Equals("Herr", StringComparison.OrdinalIgnoreCase));
         // Anzahl der Kunden mit Anrede "Frau"
         var femaleCount = customers.Count(c => c.Anrede.Equals("Frau", StringComparison.OrdinalIgnoreCase));
-        // Anzahl der Kunden mit unbekannter Anrede 
+        // Anzahl der Kunden mit unbekannter Anrede
         var unknownGenderCount = totalCustomers - maleCount - femaleCount;
-        // Berechnung der prozentualen Verteilung
-        var malePercentage = (float)maleCount / totalCustomers * 100;
-        var femalePercentage = (float)femaleCount / totalCustomers * 100;
-        lblMännlich.Text = $"Männlich: {malePercentage:F2}%";
-        lblWeiblich.Text = $"Weiblich: {femalePercentage:F2}%";
-        lblUnbekannt.Text = $"Unbekannt: {100 - malePercentage - femalePercentage:F2}%";
+        // Berechnung der prozentualen Verteilung und Anzeige im Label
+        lblMännlich.Text = $"Männlich: {(float)maleCount / totalCustomers * 100:F2}%";
+        lblWeiblich.Text = $"Weiblich: {(float)femaleCount / totalCustomers * 100:F2}%";
+        lblUnbekannt.Text = $"Unbekannt: {(float)unknownGenderCount / totalCustomers * 100:F2}%";
     }
 
-    // Häufigster Email-Provider
+    // Finde den Email Provider mit den meisten Vorkommen in der Klasse Kunden.Email
+    // Anzeige des häufigsten Email-Providers im Label
     void DisplayMostCommonEmailProvider(List<Kunden> customers)
     {
-        // Finde den Email Provider mit den meisten Vorkommen in der Klasse Kunden.Email
-        // Anzeige des häufigsten Email-Providers im Label
         lblEmailProvider.Text = $"Häufigster Email-Provider: {customers.Where(c => !string.IsNullOrEmpty(c.EMail))
                                                                         .Select(c => c.EMail.Split('@').Last())
                                                                         .GroupBy(emailProvider => emailProvider)
